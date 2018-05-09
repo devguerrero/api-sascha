@@ -1,13 +1,13 @@
 'use strict';
 
-const Estados 	= require('../collections/estados');
-const Estado  	= require('../models/estado');
+const Ayudas 	= require('../collections/ayudas');
+const Ayuda  	= require('../models/ayuda');
 
-function getEstados(req, res, next) {
-	Estados.query(function (qb) {
-   		qb.where('estado.estatus', '=', 1);
+function getAyudas(req, res, next) {
+	Ayudas.query(function (qb) {
+   		qb.where('ayuda.estatus', '=', 1);
 	})
-	.fetch({ columns: ['id_estado','nombre'] })
+	.fetch()
 	.then(function(data) {
 		if (!data)
 			return res.status(404).json({ 
@@ -23,15 +23,15 @@ function getEstados(req, res, next) {
 	.catch(function (err) {
      	return res.status(500).json({
 			error: true,
-			data: { mensaje: err.message }
+			data: data
 		});
     });
 }
 
-function saveEstado(req, res, next){
+function saveAyuda(req, res, next){
 	console.log(JSON.stringify(req.body));
 
-	Estado.forge({ nombre:req.body.nombre  })
+	Ayuda.forge({ pregunta:req.body.pregunta ,respuesta:req.body.respuesta  })
 	.save()
 	.then(function(data){
 		res.status(200).json({
@@ -45,12 +45,12 @@ function saveEstado(req, res, next){
 		res.status(500)
 		.json({
 			error: true,
-			data: {message: err.message}
+			data: data
 		});
 	});
 }
 
-function getEstadoById(req, res, next) {
+function getAyudaById(req, res, next) {
 	const id = Number.parseInt(req.params.id);
 	if (!id || id == 'NaN') 
 		return res.status(400).json({ 
@@ -58,13 +58,13 @@ function getEstadoById(req, res, next) {
 			data: { mensaje: 'Solicitud incorrecta' } 
 		});
 
-	Estado.forge({ id_estado: id })
+	Ayuda.forge({ id_ayuda: id, estatus: 1 })
 	.fetch()
 	.then(function(data) {
 		if(!data) 
 			return res.status(404).json({ 
 				error: true, 
-				data: { mensaje: 'dato no encontrado' } 
+				data: data
 			});
 		return res.status(200).json({ 
 			error : false, 
@@ -79,7 +79,7 @@ function getEstadoById(req, res, next) {
 	});
 }
 
-function updateEstado(req, res, next) {
+function updateAyuda(req, res, next) {
 	const id = Number.parseInt(req.params.id);
 	if (!id || id == 'NaN') {
 		return res.status(400).json({ 
@@ -88,15 +88,15 @@ function updateEstado(req, res, next) {
 		});
 	}
 
-	Estado.forge({ id_estado: id })
+	Ayuda.forge({ id_ayuda: id, estatus: 1 })
 	.fetch()
 	.then(function(data){
 		if(!data) 
 			return res.status(404).json({ 
 				error: true, 
-				data: { mensaje: 'Solicitud no encontrada' } 
+				data: data 
 			});
-		data.save({ nombre:req.body.nombre || data.get('nombre') })
+		data.save({ pregunta:req.body.pregunta || data.get('pregunta'),respuesta:req.body.respuesta || data.get('respuesta') })
 		.then(function() {
 			return res.status(200).json({ 
 				error: false, 
@@ -118,7 +118,7 @@ function updateEstado(req, res, next) {
 	})
 }
 
-function deleteEstado(req, res, next) {
+function deleteAyuda(req, res, next) {
 	const id = Number.parseInt(req.params.id);
 	if (!id || id == 'NaN') {
 		return res.status(400).json({ 
@@ -126,7 +126,7 @@ function deleteEstado(req, res, next) {
 			data: { mensaje: 'Solicitud incorrecta' } 
 		});
 	}
-	Estado.forge({ id_estado: id })
+	Ayuda.forge({ id_ayuda: id, estatus: 1 })
 	.fetch()
 	.then(function(data){
 		if(!data) 
@@ -158,9 +158,9 @@ function deleteEstado(req, res, next) {
 }
 
 module.exports = {
-	getEstados,
-	saveEstado,
-	getEstadoById,
-	updateEstado,
-	deleteEstado
+	getAyudas,
+	saveAyuda,
+	getAyudaById,
+	updateAyuda,
+	deleteAyuda
 }

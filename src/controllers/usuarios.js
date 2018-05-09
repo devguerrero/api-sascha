@@ -6,19 +6,19 @@ const Cliente       = require('../models/cliente');
 const ViewCliente   = require('../models/v_cliente');
 const correoTemplate = require('../views/correoTemplate');
 const Bookshelf     = require('../commons/bookshelf');
-const Bcrypt        = require("bcrypt");
+const Bcrypt        = require("bcryptjs");
 const Crypto        = require("crypto");
 const nodemailer    = require('nodemailer');
 const service       = require("../services");
 const MAIL_SERVICE       = process.env.MAIL_SERVICE       || 'gmail';
-const MAIL_USER          = process.env.MAIL_USER          || 'SaschaNutric@gmail.com';
+const MAIL_USER          = process.env.MAIL_USER          || 'saschanutric@gmail.com';
 const MAIL_CLIENT_ID     = process.env.MAIL_CLIENT_ID     || '';
 const MAIL_CLIENT_SECRET = process.env.MAIL_CLIENT_SECRET || '';
 const REFRESH_TOKEN      = process.env.REFRESH_TOKEN      || '';
 
 function getUsuarios(req, res, next) {
 	Usuarios.query({ where: { estatus: 1 } })
-	.fetch({ columns: ['id_usuario', 'correo', 'nombre_usuario', 'fecha_creacion', 'fecha_actualizacion', 'ultimo_acceso' ] })
+	.fetch({ withRelated: ['rol'] })
 	.then(function(usuarios) {
 		if (!usuarios)
 			return res.status(404).json({ 
@@ -87,7 +87,6 @@ function saveUsuario(req, res, next) {
 				id_usuario:       usuario.get('id_usuario'),
 				id_genero:        req.body.id_genero,
 				id_estado_civil:  req.body.id_estado_civil,
-				id_estado:        req.body.id_estado,
 				nombres:          req.body.nombres,
 				apellidos:        req.body.apellidos,
 				cedula:           req.body.cedula,
@@ -255,8 +254,8 @@ function singIn(req, res) {
 		if(esContrasenia) {
 			ViewCliente.forge({ id_usuario: usuario.get('id_usuario') })
 			.fetch({ columns: ['id_cliente', 'cedula', 'nombres', 'apellidos', 
-								'telefono', 'genero', 'estado_civil', 'direccion', 
-								'fecha_nacimiento', 'tipo_cliente', 'estado', 'rango_edad'] })
+								'telefono', 'id_genero', 'genero', 'id_estado_civil','estado_civil', 'direccion', 
+								'fecha_nacimiento', 'tipo_cliente', 'rango_edad'] })
 			.then(function(cliente) {
 				if(!cliente) 
 					return res.status(404).json({ 

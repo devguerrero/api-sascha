@@ -7,6 +7,7 @@
   },
   "scripts": {
     "start": "node ./app.js",
+    "start:dev": "nodemon ./app.js",
     "update:db": "psql saschadb < $PWD/db/saschadb.sql",
     "remove:db": "dropdb -e --if-exists -h localhost -p 5432 -U postgres saschadb",
     "create:db": "sudo -u postgres psql -c 'create database saschadb;'",
@@ -16,9 +17,10 @@
     "sascha": "bash sascha"
   },
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcryptjs": "^1.1.0",
     "body-parser": "~1.17.1",
     "bookshelf": "^0.12.1",
+    "cloudinary": "^1.9.1",
     "debug": "~2.6.3",
     "express": "~4.15.2",
     "express-handlebars": "^3.0.0",
@@ -28,9 +30,13 @@
     "lodash": "^4.17.5",
     "moment": "^2.21.0",
     "morgan": "^1.9.0",
+    "multer": "^0.1.8",
     "nodemailer": "^4.6.3",
     "pg": "^7.4.1",
     "socket.io": "^2.1.0",
     "when": "^3.7.8"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.3"
   }
 }

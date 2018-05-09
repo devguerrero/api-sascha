@@ -5,7 +5,7 @@ const TipoValoracion  = require('../models/tipo_valoracion');
 
 function getTipoValoraciones(req, res, next) {
 	TipoValoraciones.query(function (qb) {
-   		qb.where('tipo_valoraciones.estatus', '=', 1);
+   		qb.where('tipo_valoracion.estatus', '=', 1);
 	})
 	.fetch()
 	.then(function(data) {
@@ -35,12 +35,10 @@ function saveTipoValoracion(req, res, next){
         nombre: req.body.nombre
 	})
 	.save()
-	.then(function(servicio){
+	.then(function(data){
 		res.status(200).json({
 			error: false,
-			data: [{
-				msg: "Registro Creado"
-			}]
+			data: data
 		});
 	})
 	.catch(function (err) {

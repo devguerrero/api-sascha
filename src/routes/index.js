@@ -1,6 +1,7 @@
 var express                       = require('express');
 
 const agendasCtrl                 = require('../controllers/agendas');
+const ayudasCtrl                  = require('../controllers/ayudas');
 const alimentosCtrl               = require('../controllers/alimentos');
 const appmovilesCtrl              = require('../controllers/app_moviles');
 const bloquehorariosCtrl          = require('../controllers/bloque_horarios');
@@ -23,7 +24,6 @@ const empleadosCtrl               = require('../controllers/empleados');
 const especialidadesCtrl          = require('../controllers/especialidades');
 const especialidadeEmpleadosCtrl  = require('../controllers/especialidad_empleados');
 const especialidadeServiciosCtrl  = require('../controllers/especialidad_servicios');
-const estadosCtrl                 = require('../controllers/estados');
 const estadoCivilesCtrl           = require('../controllers/estado_civiles');
 const frecuenciasCtrl             = require('../controllers/frecuencias');
 const funcionalidadesCtrl         = require('../controllers/funcionalidades');
@@ -70,6 +70,7 @@ const tipo_parametrosCtrl         = require('../controllers/tipo_parametros');
 const tipo_respuestasCtrl         = require('../controllers/tipo_respuestas');
 const tipo_unidadesCtrl           = require('../controllers/tipo_unidades');
 const tipo_valoracionesCtrl       = require('../controllers/tipo_valoraciones');
+const tipo_notificacionesCtrl     = require('../controllers/tipo_notificaciones');
 const unidadesCtrl                = require('../controllers/unidades');
 const usuariosCtrl                = require('../controllers/usuarios');
 const valoracionesCtrl            = require('../controllers/valoraciones');
@@ -95,6 +96,12 @@ module.exports = (function () {
   api.get('/agenda/:id',                     agendasCtrl.getAgendaById);  
   api.put('/agenda/:id',                     agendasCtrl.updateAgenda);
   api.delete('/agenda/:id',                  agendasCtrl.deleteAgenda);  
+
+  api.get('/ayudas',                         ayudasCtrl.getAyudas);
+  api.post('/ayudas',                        ayudasCtrl.saveAyuda);
+  api.get('/ayuda/:id',                      ayudasCtrl.getAyudaById);  
+  api.put('/ayuda/:id',                      ayudasCtrl.updateAyuda);
+  api.delete('/ayuda/:id',                   ayudasCtrl.deleteAyuda);  
 
   api.get('/alimentos',                      alimentosCtrl.getAlimentos);
   api.post('/alimentos',                     alimentosCtrl.saveAlimento);
@@ -128,6 +135,7 @@ module.exports = (function () {
 
   api.get('/clientes',                       clientesCtrl.getClientes);
   api.get('/cliente/:id',                    clientesCtrl.getClienteById);
+  api.put('/cliente/:id',                    clientesCtrl.updateCliente);
 
   api.get('/comentarios',                    comentariosCtrl.getComentarios);
   api.post('/comentarios',                   comentariosCtrl.saveComentario);
@@ -145,7 +153,7 @@ module.exports = (function () {
   api.post('/condiciongarantias',            condicionGarantiasCtrl.saveCondicion_garantia);
   api.get('/condiciongarantia/:id',          condicionGarantiasCtrl.getCondicion_garantiaById);  
   api.put('/condiciongarantia/:id',          condicionGarantiasCtrl.updateCondicion_garantia);
-  api.delete('/condicion/garantia/:id',      condicionGarantiasCtrl.deleteCondicion_garantia);  
+  api.delete('/condiciongarantia/:id',      condicionGarantiasCtrl.deleteCondicion_garantia);  
 
   api.get('/contenidos',                     contenidosCtrl.getContenidos);
   api.post('/contenidos',                    contenidosCtrl.saveContenido);
@@ -230,13 +238,7 @@ module.exports = (function () {
   api.get('/especialidadeservicio/:id',      especialidadeServiciosCtrl.getEspecialidad_servicioById);  
   api.put('/especialidadeservicio/:id',      especialidadeServiciosCtrl.updateEspecialidad_servicio);
   api.delete('/especialidadeservicio/:id',   especialidadeServiciosCtrl.deleteEspecialidad_servicio);   
-
-  api.get('/estados',                        estadosCtrl.getEstados);
-  api.post('/estados',                       estadosCtrl.saveEstado);
-  api.get('/estado/:id',                     estadosCtrl.getEstadoById);  
-  api.put('/estado/:id',                     estadosCtrl.updateEstado);
-  api.delete('/estado/:id',                  estadosCtrl.deleteEstado);   
-
+  
   api.get('/estadociviles',                  estadoCivilesCtrl.getEstado_civiles);
   api.post('/estadociviles',                 estadoCivilesCtrl.saveEstado_civil);
   api.get('/estadocivil/:id',                estadoCivilesCtrl.getEstado_civilById);  
@@ -286,10 +288,14 @@ module.exports = (function () {
   api.delete('/incidencia/:id',              incidenciasCtrl.deleteIncidencia);  
 
   api.get('/motivos',                        motivosCtrl.getMotivos);
+  api.get('/motivos/solicitud',              motivosCtrl.getMotivosDeSolicitud); 
+  api.get('/motivos/queja',                  motivosCtrl.getMotivosDeQueja); 
+  api.get('/motivos/sugerencia',             motivosCtrl.getMotivosDeSugerencia); 
   api.post('/motivos',                       motivosCtrl.saveMotivo);
   api.get('/motivo/:id',                     motivosCtrl.getMotivoById);  
   api.put('/motivo/:id',                     motivosCtrl.updateMotivo);
   api.delete('/motivo/:id',                  motivosCtrl.deleteMotivo);  
+  api.get('/motivo_tipo/:id',                motivosCtrl.getMotivo_tipo);
 
   api.get('/negocios',                       negociosCtrl.getNegocios);
   api.post('/negocios',                      negociosCtrl.saveNegocio);
@@ -465,7 +471,7 @@ module.exports = (function () {
   api.put('/tipocriterio/:id',               tipo_criteriosCtrl.updateTipoCriterio);
   api.delete('/tipocriterio/:id',            tipo_criteriosCtrl.deleteTipoCriterio);
 
-  api.get('/tipo/dietas',                    tipo_dietasCtrl.getTipoDietas);
+  api.get('/tipodietas',                     tipo_dietasCtrl.getTipoDietas);
   api.post('/tipodietas',                    tipo_dietasCtrl.saveTipoDieta);
   api.get('/tipodieta/:id',                  tipo_dietasCtrl.getTipoDietaById);  
   api.put('/tipodieta/:id',                  tipo_dietasCtrl.updateTipoDieta);
@@ -482,6 +488,10 @@ module.exports = (function () {
   api.get('/tipomotivo/:id',                 tipo_motivosCtrl.getTipoMotivoById);  
   api.put('/tipomotivo/:id',                 tipo_motivosCtrl.updateTipoMotivo);
   api.delete('/tipomotivo/:id',              tipo_motivosCtrl.deleteTipoMotivo);
+  api.get('/tipomotivos/canalescucha',       tipo_motivosCtrl.getTipoMotivosCanalEscucha);
+  
+  api.get('/tiponotificaciones',             tipo_notificacionesCtrl.getTipoNotificaciones);
+  api.put('/tiponotificaciones/:id',         tipo_notificacionesCtrl.updateTipoNotificacion);
 
   api.get('/tipoordenes',                    tipo_ordenesCtrl.getTipoOrdenes);
   api.post('/tipoordenes',                   tipo_ordenesCtrl.saveTipoOrden);
@@ -520,7 +530,7 @@ module.exports = (function () {
   api.delete('/unidad/:id',                  unidadesCtrl.deleteUnidad);  
 
   api.get('/usuarios',                       usuariosCtrl.getUsuarios);
-  api.post('/usuarios',                      usuariosCtrl.saveUsuario);
+  api.post('/suscripciones',                 usuariosCtrl.saveUsuario);
   api.get('/usuario/:id',                    usuariosCtrl.getUsuarioById);
   api.put('/usuario/:id',                    usuariosCtrl.updateUsuario);
   api.delete('/usuario/:id',                 usuariosCtrl.deleteUsuario);

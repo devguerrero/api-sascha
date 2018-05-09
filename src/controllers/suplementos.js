@@ -7,7 +7,7 @@ function getSuplementos(req, res, next) {
 	Suplementos.query(function (qb) {
    		qb.where('suplemento.estatus', '=', 1);
 	})
-	.fetch()
+	.fetch({ withRelated: ['unidad', 'unidad.tipo_unidad'] })
 	.then(function(data) {
 		if (!data)
 			return res.status(404).json({ 
@@ -32,13 +32,11 @@ function saveSuplemento(req, res, next){
 	console.log(JSON.stringify(req.body));
 
 	Suplemento.forge({ id_unidad:req.body.id_unidad ,nombre:req.body.nombre  })
-	.save()
+	.fetch({ withRelated: ['unidad','unidad.tipo_unidad'] })
 	.then(function(data){
 		res.status(200).json({
 			error: false,
-			data: [{
-				msg: "Registro Creado"
-			}]
+			data: data
 		});
 	})
 	.catch(function (err) {
@@ -59,7 +57,7 @@ function getSuplementoById(req, res, next) {
 		});
 
 	Suplemento.forge({ id_suplemento: id, estatus: 1 })
-	.fetch()
+	.fetch({ withRelated: ['unidad', 'unidad.tipo_unidad'] })
 	.then(function(data) {
 		if(!data) 
 			return res.status(404).json({ 
@@ -89,7 +87,7 @@ function updateSuplemento(req, res, next) {
 	}
 
 	Suplemento.forge({ id_suplemento: id, estatus: 1 })
-	.fetch()
+	.fetch({ withRelated: ['unidad','unidad.tipo_unidad'] })
 	.then(function(data){
 		if(!data) 
 			return res.status(404).json({ 

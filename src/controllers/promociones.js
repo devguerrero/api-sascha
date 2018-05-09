@@ -10,9 +10,15 @@ function getPromociones(req, res, next) {
 	.fetch({
 		withRelated: [
 			'servicio',
+			'servicio.plan_dieta',
+			'servicio.plan_dieta.tipo_dieta',
+			'servicio.plan_ejercicio',
+			'servicio.plan_suplemento',
+			'servicio.precio',
+			'servicio.precio.unidad',
+			'servicio.precio.unidad.tipo_unidad',
 			'genero',
 			'estado_civil',
-			'estado',
 			'rango_edad'
 		]})
 	.then(function(data) {
@@ -42,18 +48,16 @@ function savePromocion(req, res, next){
 		id_servicio: req.body.id_servicio,
 		nombre: req.body.nombre,
 		descripcion: req.body.descripcion,
+		descuento:   req.body.descuento,
 		id_genero: req.body.id_genero,
 		id_estado_civil: req.body.id_estado_civil,
-		id_rango_edad: req.body.id_rango_edad,
-		id_estado: req.body.id_estado
+		id_rango_edad: req.body.id_rango_edad
 	})
 	.save()
 	.then(function(servicio){
 		res.status(200).json({
 			error: false,
-			data: [{
-				msg: "Registro Creado"
-			}]
+			data: data
 		});
 	})
 	.catch(function (err) {
@@ -79,7 +83,6 @@ function getPromocionById(req, res, next) {
 			'servicio',
 			'genero',
 			'estado_civil',
-			'estado',
 			'rango_edad'
 		]})
 	.then(function(data) {
@@ -122,10 +125,10 @@ function updatePromocion(req, res, next) {
 			id_servicio: req.body.id_servicio || data.get('id_servicio'),
 			nombre: req.body.nombre || data.get('nombre'),
 			descripcion: req.body.descripcion || data.get('descripcion'),
+			descuento:   req.body.descuento   || data.get('descuento'),
 			id_genero: req.body.id_genero || data.get('id_genero'),
 			id_estado_civil: req.body.id_estado_civil || data.get('id_estado_civil'),
-			id_rango_edad: req.body.id_rango_edad || data.get('id_rango_edad'),
-			id_estado: req.body.id_estado || data.get('id_estado')
+			id_rango_edad: req.body.id_rango_edad || data.get('id_rango_edad')
 		})
 		.then(function() {
 			return res.status(200).json({ 

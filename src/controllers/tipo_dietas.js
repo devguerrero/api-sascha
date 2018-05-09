@@ -29,18 +29,15 @@ function getTipoDietas(req, res, next) {
 }
 
 function saveTipoDieta(req, res, next){
-	console.log(JSON.stringify(req.body));
-
+	
 	TipoDieta.forge({
         nombre: req.body.nombre
 	})
 	.save()
-	.then(function(servicio){
+	.then(function(data){
 		res.status(200).json({
 			error: false,
-			data: [{
-				msg: "Registro Creado"
-			}]
+			data: data
 		});
 	})
 	.catch(function (err) {

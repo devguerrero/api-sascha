@@ -7,7 +7,7 @@ function getBloque_horarios(req, res, next) {
 	Bloque_horarios.query(function (qb) {
    		qb.where('bloque_horario.estatus', '=', 1);
 	})
-	.fetch({ columns: ['hora_inicio','hora_fin'] })
+	.fetch({ columns: ['id_bloque_horario','hora_inicio','hora_fin'] })
 	.then(function(data) {
 		if (!data)
 			return res.status(404).json({ 
@@ -36,9 +36,7 @@ function saveBloque_horario(req, res, next){
 	.then(function(data){
 		res.status(200).json({
 			error: false,
-			data: [{
-				msg: "Registro Creado"
-			}]
+			data: data
 		});
 	})
 	.catch(function (err) {

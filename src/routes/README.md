@@ -35,7 +35,7 @@ Informacion sobre el contenido manejado sobre cada rutas de la api-sascha
     * [tiporespuestas](#tiporespuestas)
     * [tipounidades](#tipounidades)
     * [tipovaloraciones](#tipovaloraciones)
-
+    * [tiponotificaciones](#tiponotificaciones)
 * [agendas](#agendas)
 * [alimentos](#alimentos)
 * [calificaciones](#calificaciones)
@@ -536,6 +536,19 @@ Postman [https://www.getpostman.com/](https://www.getpostman.com/)
 
 # motivos
 
+```
+    ├─GET────/motivos          * Retorna todos.
+    ├─POST───/motivos          * Guarda. 
+    ├─GET────/motivos_tipo/:id * Retorna todos los motivos por tipo_motivo.
+    ├─GET────/motivo/:id       * Retorna por id.
+    ├─PUT────/motivo/:id       * Actualiza.
+    ├─DELETE─/motivo/:id       * Eliminacion logica por id.
+    ├─Body─{ 
+        "id_tipo_motivo": 1, 
+        "descripcion": "" 
+    }
+```
+
 [[ver json]](https://api-sascha.herokuapp.com/motivos)
 
 # ordenServicios
@@ -560,9 +573,34 @@ Postman [https://www.getpostman.com/](https://www.getpostman.com/)
 
 # plandietas
 
+```
+    ├─GET────/plandietas         * Retorna todos.
+    ├─POST───/plandietas         * Guarda. 
+    ├─GET────/plandieta/:id      * Retorna por id.
+    ├─PUT────/plandieta/:id      * Actualiza.
+    ├─DELETE─/plandieta/:id       * Elimina.
+    ├─Body─{
+        "id_tipo_dieta": 2,
+        "nombre": "", 
+        "descripcion": ""
+    }
+```
+
 [[ver json]](https://api-sascha.herokuapp.com/plandietas)
 
 # planejercicios
+
+```
+    ├─GET────/planejercicios         * Retorna todos.
+    ├─POST───/planejercicios         * Guarda. 
+    ├─GET────/planejercicio/:id      * Retorna por id.
+    ├─PUT────/planejercicio/:id      * Actualiza.
+    ├─DELETE─/planejercicio/:id       * Elimina.
+    ├─Body─{
+        "nombre": "", 
+        "descripcion": ""
+    }
+```
 
 [[ver json]](https://api-sascha.herokuapp.com/planejercicios)
 
@@ -571,6 +609,19 @@ Postman [https://www.getpostman.com/](https://www.getpostman.com/)
 [[ver json]](https://api-sascha.herokuapp.com/plansuplementos)
 
 # precios
+
+```
+    ├─GET────/precios        * Retorna todos.
+    ├─POST───/precios        * Guarda. 
+    ├─GET────/precio/:id      * Retorna por id.
+    ├─PUT────/precio/:id      * Actualiza.
+    ├─DELETE─/precio/:id      * Elimina.
+    ├─Body─{
+        "id_unidad": 0,
+        "nombre":"Dos millones quinientos",
+        "valor": 2500000 
+    }
+```
 
 [[ver json]](https://api-sascha.herokuapp.com/precios)
 
@@ -615,6 +666,19 @@ Postman [https://www.getpostman.com/](https://www.getpostman.com/)
 [[ver json]](https://api-sascha.herokuapp.com/solicitudes)
 
 # suplementos
+
+```
+    ├─GET────/suplementos         * Retorna todos.
+    ├─POST───/suplementos         * Guarda. 
+    ├─GET────/suplemento/:id      * Retorna por id.
+    ├─PUT────/suplemento/:id      * Actualiza.
+    ├─DELETE─/suplemento/:id       * Elimina.
+    ├─Body─{
+        "nombre": "",
+        "descripcion": "",
+        "id_unidad":19
+    }
+```
 
 [[ver json]](https://api-sascha.herokuapp.com/suplementos)
 
@@ -790,6 +854,15 @@ Postman [https://www.getpostman.com/](https://www.getpostman.com/)
 ```
 [[ver json]](https://api-sascha.herokuapp.com/tipovaloraciones)
 
+# Tipo Notificaciones
+
+```
+    ├─GET────/tiponotificaciones       * Retorna todos.
+    ├─PUT────/tiponotificaciones/:id   * Actualiza.
+```
+[[ver json]](https://api-sascha.herokuapp.com/tiponotificaciones)
+
+
 # Unidades
 
 ```
@@ -798,6 +871,12 @@ Postman [https://www.getpostman.com/](https://www.getpostman.com/)
     ├─GET────/unidad/:id      * Retorna por id.
     ├─PUT────/unidad/:id      * Actualiza.
     ├─DELETE─/unidad/:id      * Elimina.
+    ├─Body─{
+        "id_tipo_unidad":0,
+        "nombre": "",
+        "abreviatura":"",
+        "simbolo": ""
+    }
 ```
 [[ver json]](https://api-sascha.herokuapp.com/unidades)
 

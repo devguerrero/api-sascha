@@ -54,12 +54,10 @@ function saveNegocio(req, res, next){
 		 longitud: req.body.longitud
 	})
 	.save()
-	.then(function(servicio){
+	.then(function(data){
 		res.status(200).json({
 			error: false,
-			data: [{
-				msg: "Registro Creado"
-			}]
+			data: data
 		});
 	})
 	.catch(function (err) {
