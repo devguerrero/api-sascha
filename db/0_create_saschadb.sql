@@ -2022,6 +2022,8 @@ CREATE TABLE respuesta (
 
 ALTER TABLE respuesta OWNER TO postgres;
 
+
+
 --
 -- Name: rol; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -2228,6 +2230,7 @@ ALTER TABLE tipo_incidencia OWNER TO postgres;
 CREATE TABLE tipo_motivo (
     id_tipo_motivo integer DEFAULT nextval('id_tipo_motivo_seq'::regclass) NOT NULL,
     nombre character(50) DEFAULT ''::bpchar NOT NULL,
+    canal_escucha boolean DEFAULT TRUE NOT NULL,
     fecha_creacion timestamp without time zone DEFAULT now() NOT NULL,
     fecha_actualizacion timestamp without time zone DEFAULT now() NOT NULL,
     estatus integer DEFAULT 1 NOT NULL
@@ -2405,21 +2408,81 @@ CREATE VIEW vista_cliente AS
     a.fecha_nacimiento,
     a.telefono,
     a.direccion,
-    d.id_estado,
-    d.nombre AS estado,
     a.tipo_cliente,
     e.nombre AS rango_edad,
     e.id_rango_edad
-   FROM ((((cliente a
+   FROM (((cliente a
      JOIN genero b ON ((a.id_genero = b.id_genero)))
      JOIN estado_civil c ON ((a.id_estado_civil = c.id_estado_civil)))
-     JOIN estado d ON ((a.id_estado = d.id_estado)))
      LEFT JOIN rango_edad e ON ((a.id_rango_edad = e.id_rango_edad)))
   WHERE (a.estatus = 1);
 
 
 ALTER TABLE vista_cliente OWNER TO postgres;
 
+
+CREATE VIEW vista_cliente_ordenes AS
+    SELECT a.id_cliente,
+    a.id_usuario,
+    ARRAY(SELECT id_orden_servicio 
+          FROM orden_servicio b 
+          JOIN solicitud_servicio c 
+          ON b.id_solicitud_servicio = c.id_solicitud_servicio
+          WHERE c.id_cliente = a.id_cliente
+          AND b.estado = 1) AS ordenes
+    FROM cliente a
+    WHERE a.estatus = 1;
+
+ALTER TABLE vista_cliente_ordenes OWNER TO postgres;
+
+
+CREATE VIEW vista_cliente_servicio_activo AS
+    SELECT a.id_orden_servicio, 
+        b.id_solicitud_servicio, 
+        d.id_cliente, 
+        (d.nombres || ' ' || d.apellidos) AS nombre_cliente, 
+        c.id_servicio, 
+        c.nombre as nombre_servicio
+    FROM orden_servicio a 
+    JOIN solicitud_servicio b ON a.id_solicitud_servicio = b.id_solicitud_servicio
+    JOIN servicio c ON b.id_servicio = c.id_servicio
+    JOIN cliente d ON b.id_cliente = d.id_cliente
+    WHERE a.estatus = 1 AND b.estatus = 1 AND c.estatus = 1 AND d.estatus = 1;
+
+ALTER TABLE vista_cliente_servicio_activo OWNER TO byqkxhkjgnspco;
+
+
+CREATE VIEW vista_agenda AS
+SELECT a.id_agenda, 
+    i.id_empleado,
+    (i.nombres || ' ' || i.apellidos) AS nombre_empleado,
+    b.id_cliente, 
+    (b.nombres || ' ' || b.apellidos) AS nombre_cliente, 
+    c.id_servicio, 
+    c.nombre AS nombre_servicio,
+    d.id_tipo_cita, 
+    e.nombre AS tipo_cita, 
+    d.fecha, 
+    f.hora_inicio, 
+    f.hora_fin
+FROM agenda a
+    JOIN cliente b ON a.id_cliente = b.id_cliente
+    JOIN orden_servicio g ON a.id_orden_servicio = g.id_orden_servicio
+    JOIN solicitud_servicio h ON g.id_solicitud_servicio = h.id_solicitud_servicio
+    JOIN servicio c ON c.id_servicio = h.id_servicio
+    JOIN cita d ON a.id_cita = d.id_cita
+    JOIN tipo_cita e ON d.id_tipo_cita = e.id_tipo_cita
+    JOIN bloque_horario f ON d.id_bloque_horario = f.id_bloque_horario
+    JOIN empleado i ON a.id_empleado = i.id_empleado
+WHERE a.estatus = 1 
+    AND b.estatus = 1 
+    AND c.estatus = 1 
+    AND d.estatus = 1
+    AND g.estatus = 1 
+    AND g.estado = 1
+    AND i.estatus = 1;
+    
+ALTER TABLE vista_cliente_servicio_activo OWNER TO byqkxhkjgnspco;
 
 --
 -- Data for Name: alimento; Type: TABLE DATA; Schema: public; Owner: postgres
@@ -2595,6 +2658,14 @@ VALUES (1, 'Desayuno'),
 
 SELECT pg_catalog.setval('id_comida_seq', 6, true);
 
+INSERT INTO dia_laborable(id_dia_laborable, dia)
+VALUES (0, 'Domingo'),
+(1, 'Lunes'),
+(2, 'Martes'),
+(3, 'Miercoles'),
+(4, 'Jueves'),
+(5, 'Viernes'),
+(6, 'Sábado');
 
 --
 -- Data for Name: estado; Type: TABLE DATA; Schema: public; Owner: postgres
@@ -2612,6 +2683,15 @@ INSERT INTO estado VALUES (8, 'Mérida', '2018-04-12 23:54:14.138-04:30', '2018-
 
 SELECT pg_catalog.setval('id_estado_seq', 8, true);
 
+INSERT INTO especialidad (id_especialidad, nombre)
+VALUES (1, 'Adelgazar'),
+(2, 'Aumentar Peso'),
+(3, 'Ganar Masa Muscular'),
+(4, 'Definición de Musculo'),
+(5, 'Control de Patología'),
+(6, 'Atención Deportiva');
+
+SELECT pg_catalog.setval('id_especialidad_seq', 6, true);
 
 --
 -- Data for Name: estado_civil; Type: TABLE DATA; Schema: public; Owner: postgres
